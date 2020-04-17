@@ -6,9 +6,29 @@
 #include <sstream>
 #include <stdio.h>
 #include <string.h>
+#include <QMutex>
+#include <queue>
+
 using namespace std;
 class indexTable{
    vector< string, vector<string, vector< unsigned >>> table;
+};
+class fileQueue{
+    QMutex mtx;
+    queue<string> q;
+    string get(){
+        mtx.lock();
+        string res = q.front();
+        q.pop();
+        mtx.unlock();
+        return res;
+    }
+    void add(string file){
+        mtx.lock();
+        q.push(file);
+        mtx.unlock();
+    }
+
 };
 
 vector<std::string> *  strToWords(std::string string){
