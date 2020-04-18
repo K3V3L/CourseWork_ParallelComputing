@@ -14,11 +14,19 @@ class indexTable{
    vector< string, vector<string, vector< unsigned >>> table;
 };
 class fileQueue{
+private:
     QMutex mtx;
     queue<string> q;
-    string get(){
+public:
+    string * get(){
         mtx.lock();
-        string res = q.front();
+        if(q.empty())
+        {
+            mtx.unlock();
+            return nullptr;
+        }
+        string * res = new string;
+        *res = q.front();
         q.pop();
         mtx.unlock();
         return res;
@@ -28,7 +36,6 @@ class fileQueue{
         q.push(file);
         mtx.unlock();
     }
-
 };
 
 vector<std::string> *  strToWords(std::string string){
@@ -45,12 +52,22 @@ vector<std::string> *  strToWords(std::string string){
         }
     return res;
 }
-void * threadFunc(vector<string> * queue){
-
+void threadFunc(fileQueue * fq){
+    string * filename = nullptr;
+    while((filename = fq->get())){
+        std::ifstream in(*filename);
+        std::cout << *filename << std::endl;
+        std::string contents((std::istreambuf_iterator<char>(in)),
+        std::istreambuf_iterator<char>());
+        vector<std::string> * words = strToWords(contents);
+        for( std::string word : *words){
+            std::cout << word << std::endl;
+        }
+    }
 }
 int main()
 {
-    vector<string> * queue = new vector<string>;
+    fileQueue * fq = new fileQueue;
     unsigned threads = 1;
     string dirname = "/home/koval/CourseWork_ParallelComputing/dataset/";
     DIR *dir;
@@ -60,8 +77,8 @@ int main()
       while ((ent = readdir (dir)) != NULL) {
           if(ent->d_name[0] == '.')
               continue;
-          std::cout << ent->d_name << std::endl;
-          queue->insert(queue->begin(), ent->d_name);
+//          std::cout << ent->d_name << std::endl;
+          fq->add(string(dirname + ent->d_name));
       }
       closedir (dir);
     } else {
@@ -69,24 +86,6 @@ int main()
       perror ("");
       return EXIT_FAILURE;
     }
-
-    std::ifstream in(dirname + queue->front());
-    std::cout << queue->front() << std::endl;
-    std::string contents((std::istreambuf_iterator<char>(in)),
-        std::istreambuf_iterator<char>());
-    std::cout << "str: " << contents;
-    vector<std::string> * words = strToWords(contents);
-    for( std::string word : *words){
-        std::cout << word << std::endl;
-    }
-    /*ifstream is(queue.front());
-    string str;
-    char * cstr;
-    while(getline(is, str)){
-       cstr = new char[str.size() + 1];
-       strcpy(cstr, str.c_str());
-    }
-    cout << "cstr:" <<  cstr;
-    */
+    threadFunc(fq);
         return(0);
 }
