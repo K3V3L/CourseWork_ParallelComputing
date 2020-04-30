@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <dirent.h>
 #include <vector>
@@ -8,10 +8,21 @@
 #include <string.h>
 #include <QMutex>
 #include <queue>
+#include <map>
 
 using namespace std;
+class tableEntry{
+public:
+    string path;
+    unsigned pos;
+};
+
 class indexTable{
-   vector< string, vector<string, vector< unsigned >>> table;
+    multimap<string, tableEntry> table;
+public:
+   void insert( string word, tableEntry *entry){
+       table.insert(pair<string, tableEntry>(word, *entry));
+   }
 };
 class fileQueue{
 private:
@@ -54,14 +65,21 @@ vector<std::string> *  strToWords(std::string string){
 }
 void threadFunc(fileQueue * fq){
     string * filename = nullptr;
+    indexTable table;
+    unsigned pos = 0;
     while((filename = fq->get())){
         std::ifstream in(*filename);
         std::cout << *filename << std::endl;
         std::string contents((std::istreambuf_iterator<char>(in)),
         std::istreambuf_iterator<char>());
         vector<std::string> * words = strToWords(contents);
+        tableEntry * entry= new tableEntry;
         for( std::string word : *words){
-            std::cout << word << std::endl;
+            std::cout << word <<  *filename << std::endl;
+            entry->pos = pos;
+            entry->path = *filename;
+            table.insert(word, entry);
+            pos++;
         }
     }
 }
