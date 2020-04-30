@@ -23,7 +23,13 @@ public:
    void insert( string word, tableEntry *entry){
        table.insert(pair<string, tableEntry>(word, *entry));
    }
+   void print(){
+       for(multimap<string, tableEntry >::const_iterator it = table.begin(); it != table.end(); ++it){
+                  std::cout << it->first << " " << it->second.path << " " << it->second.pos << "\n";
+              }
+          }
 };
+
 class fileQueue{
 private:
     QMutex mtx;
@@ -66,8 +72,9 @@ vector<std::string> *  strToWords(std::string string){
 void threadFunc(fileQueue * fq){
     string * filename = nullptr;
     indexTable table;
-    unsigned pos = 0;
+    unsigned pos;
     while((filename = fq->get())){
+        pos = 0;
         std::ifstream in(*filename);
         std::cout << *filename << std::endl;
         std::string contents((std::istreambuf_iterator<char>(in)),
@@ -82,6 +89,7 @@ void threadFunc(fileQueue * fq){
             pos++;
         }
     }
+    table.print();
 }
 int main()
 {
