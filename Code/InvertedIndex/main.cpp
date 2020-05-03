@@ -16,7 +16,7 @@ public:
     string path;
     unsigned pos;
 };
-
+vector<std::string> *  strToWords(std::string string);
 class indexTable{
     multimap<string, tableEntry> table;
 public:
@@ -28,6 +28,24 @@ public:
                   std::cout << it->first << " " << it->second.path << " " << it->second.pos << "\n";
               }
           }
+   vector<string> * get(string key){
+       vector<string> * res = new vector<string>;
+       if (key.find_first_of(" ") != string::npos){ //it's a phrase
+           cout << "phrase" << endl;
+           for( auto &i : *(strToWords(key))){
+               std::cout << i << std::endl;
+           }
+       }
+       else{ // it's a keyword
+           cout << "keyword" << endl;
+          auto range = table.equal_range(key);
+          for (auto itr = range.first; itr != range.second; itr++){
+              std::cout << key << " in " << itr->second.path << endl;
+          }
+       }
+
+       return res;
+   }
 };
 
 class fileQueue{
@@ -58,7 +76,6 @@ public:
 vector<std::string> *  strToWords(std::string string){
     vector<std::string> * res = new vector<std::string>;
     int n = string.length();
-
         char char_array[n + 1];
         char * token;
         strcpy(char_array, string.c_str());
@@ -90,6 +107,7 @@ void threadFunc(fileQueue * fq){
         }
     }
     table.print();
+    table.get("test phrase");
 }
 int main()
 {
