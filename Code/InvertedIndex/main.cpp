@@ -87,8 +87,11 @@ vector<std::string> *strToWords(std::string string) {
   strcpy(char_array, string.c_str());
   char *rest = char_array;
   // std::cout << std::endl << char_array << std::endl;
+  std::string sToken;
   while ((token = strtok_r(rest, " #_$[]():;!?,.\"", &rest))) {
-    res->push_back(std::string(token));
+      sToken = std::string(token);
+    transform(sToken.begin(), sToken.end(), sToken.begin(), ::tolower);
+    res->push_back(sToken);
   }
   return res;
 }
