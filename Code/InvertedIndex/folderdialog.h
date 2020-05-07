@@ -15,6 +15,9 @@ public:
   explicit folderDialog(QWidget *parent = nullptr);
   ~folderDialog();
 
+private slots:
+  void on_bOpen_accepted();
+
 private:
   Ui::folderDialog *ui;
 };
