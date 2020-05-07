@@ -9,6 +9,8 @@
 #include <string.h>
 #include <string>
 #include <vector>
+#include <folderdialog.h>
+#include <QApplication>
 
 using namespace std;
 class tableEntry {
@@ -115,7 +117,11 @@ void threadFunc(fileQueue *fq, indexTable *table) {
     }
   }
 }
-int main() {
+int main(int argc, char *argv[]) {
+  QApplication a(argc, argv);
+  folderDialog dialog;
+  dialog.show();
+  return a.exec();
   fileQueue *fq = new fileQueue;
   unsigned threads = 1;
   string dirname = "/home/koval/CourseWork_ParallelComputing/dataset/";
