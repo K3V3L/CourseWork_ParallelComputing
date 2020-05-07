@@ -11,92 +11,15 @@
 #include <vector>
 #include <folderdialog.h>
 #include <QApplication>
+#include <filequeue.h>
+#include <indextable.h>
+#include <util.h>
 
 using namespace std;
-class tableEntry {
-public:
-  string path;
-  unsigned pos;
-};
-vector<std::string> *strToWords(std::string string);
-class indexTable {
-  QMutex m;
-  multimap<string, tableEntry> table;
 
-public:
-  void insert(string word, tableEntry *entry) {
-    m.lock();
-    table.insert(pair<string, tableEntry>(word, *entry));
-    m.unlock();
-  }
-  void print() {
-    for (multimap<string, tableEntry>::const_iterator it = table.begin();
-         it != table.end(); ++it) {
-      std::cout << it->first << " " << it->second.path << " " << it->second.pos
-                << "\n";
-    }
-  };
-  vector<string> *get(string key) {
-    vector<string> *res = new vector<string>;
-    if (key.find_first_of(" ") != string::npos) { // it's a phrase
-      cout << "phrase" << endl;
-      for (auto &i : *(strToWords(key))) {
-          auto range = table.equal_range(i);
-          for ( auto itr = range.first; itr != range.second; itr++){
-              res->push_back(itr->second.path);
-          }
-      }
-    } else { // it's a keyword
-      cout << "keyword" << endl;
-      auto range = table.equal_range(key);
-      for (auto itr = range.first; itr != range.second; itr++) {
-        res->push_back(itr->second.path);
-      }
-    }
-    return res;
-  }
-};
-class fileQueue {
-private:
-  QMutex mtx;
-  queue<string> q;
 
-public:
-  string *get() {
-    mtx.lock();
-    if (q.empty()) {
-      mtx.unlock();
-      return nullptr;
-    }
-    string *res = new string;
-    *res = q.front();
-    q.pop();
-    mtx.unlock();
-    return res;
-  }
-  void add(string file) {
-    mtx.lock();
-    q.push(file);
-    mtx.unlock();
-  }
-};
 
-vector<std::string> *strToWords(std::string string) {
-  vector<std::string> *res = new vector<std::string>;
-  int n = string.length();
-  char char_array[n + 1];
-  char *token;
-  strcpy(char_array, string.c_str());
-  char *rest = char_array;
-  // std::cout << std::endl << char_array << std::endl;
-  std::string sToken;
-  while ((token = strtok_r(rest, " #_$[]():;!?,.\"", &rest))) {
-      sToken = std::string(token);
-    transform(sToken.begin(), sToken.end(), sToken.begin(), ::tolower);
-    res->push_back(sToken);
-  }
-  return res;
-}
+
 void threadFunc(fileQueue *fq, indexTable *table) {
   string *filename = nullptr;
   unsigned pos;
@@ -106,7 +29,7 @@ void threadFunc(fileQueue *fq, indexTable *table) {
     std::cout << *filename << std::endl;
     std::string contents((std::istreambuf_iterator<char>(in)),
                          std::istreambuf_iterator<char>());
-    vector<std::string> *words = strToWords(contents);
+    vector<std::string> *words = util::strToWords(contents);
     tableEntry *entry = new tableEntry;
     for (std::string word : *words) {
       // std::cout << word <<  *filename << std::endl;
@@ -121,7 +44,7 @@ int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
   folderDialog dialog;
   dialog.show();
-  return a.exec();
+
   fileQueue *fq = new fileQueue;
   unsigned threads = 1;
   string dirname = "/home/koval/CourseWork_ParallelComputing/dataset/";
