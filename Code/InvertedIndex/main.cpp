@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
   folderDialog dialog;
   dialog.show();
-
+  dialog.exec();
   fileQueue *fq = new fileQueue;
   unsigned threads = 1;
   string dirname = "/home/koval/CourseWork_ParallelComputing/dataset/";

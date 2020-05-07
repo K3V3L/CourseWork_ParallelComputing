@@ -18,6 +18,8 @@ public:
 private slots:
   void on_bOpen_accepted();
 
+  void on_bOk_accepted();
+
 private:
   Ui::folderDialog *ui;
 };

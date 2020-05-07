@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         filequeue.cpp \
         folderdialog.cpp \
+        indexer.cpp \
         indextable.cpp \
         main.cpp \
         tableentry.cpp \
@@ -27,11 +28,13 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    folderdialog.ui
+    folderdialog.ui \
+    indexer.ui
 
 HEADERS += \
     filequeue.h \
     folderdialog.h \
+    indexer.h \
     indextable.h \
     tableentry.h \
     util.h

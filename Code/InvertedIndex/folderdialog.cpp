@@ -3,6 +3,7 @@
 #include "iostream"
 #include <QString>
 #include <QFileDialog>
+#include <indexer.h>
 
 folderDialog::folderDialog(QWidget *parent) :
   QDialog(parent),
@@ -21,4 +22,11 @@ void folderDialog::on_bOpen_accepted()
   QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QDir::homePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
   ui->lPath->setText(dir);
   ui->bOk->setDisabled(0);
+  }
+
+void folderDialog::on_bOk_accepted()
+{
+  indexer ind(this);
+  this->close();
+  ind.exec();
 }
