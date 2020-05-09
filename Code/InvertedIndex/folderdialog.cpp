@@ -28,5 +28,6 @@ void folderDialog::on_bOk_accepted()
 {
   indexer ind(this);
   this->close();
+  ind.setPath(ui->lPath->text().toStdString());
   ind.exec();
 }
