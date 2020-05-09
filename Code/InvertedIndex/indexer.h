@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <string>
+#include <indextable.h>
+#include <filequeue.h>
 
 namespace Ui {
   class indexer;
@@ -17,8 +19,15 @@ public:
   ~indexer();
   void setPath(std::string);
 
+private slots:
+  void on_bIndex_clicked();
+
+  void on_bFind_clicked();
+
 private:
   Ui::indexer *ui;
+indexTable * table;
+fileQueue * fq;
   std::string path;
 };
 
