@@ -21,3 +21,6 @@ fileQueue::fileQueue()
     q.push(file);
     mtx.unlock();
   }
+  unsigned fileQueue::getSize(){
+    return q.size();
+  }

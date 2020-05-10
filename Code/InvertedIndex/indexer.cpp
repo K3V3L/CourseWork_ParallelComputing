@@ -8,6 +8,7 @@
 #include <iostream>
 #include <util.h>
 #include <QDebug>
+#include <atomic>
 
 indexer::indexer(QWidget *parent) :
   QDialog(parent),
@@ -23,7 +24,7 @@ indexer::~indexer()
 void indexer::setPath(std::string path){
   this->path = path;
 }
-void threadFunc(fileQueue *fq, indexTable *table, Ui::indexer *ui) {
+void threadFunc(fileQueue *fq, indexTable *table, Ui::indexer *ui, std::atomic<unsigned> * counter, unsigned size) {
   std::string *filename = nullptr;
   unsigned pos;
   while ((filename = fq->get())) {
@@ -41,7 +42,10 @@ void threadFunc(fileQueue *fq, indexTable *table, Ui::indexer *ui) {
       table->insert(word, entry);
       pos++;
     }
+    (*counter)++;
     ui->listWidget->addItem(QString::fromStdString(*filename));
+    std::cout << *counter / size * 100 << std::endl;
+    ui->progressBar->setValue(*counter / (float)size * 100);
   }
 }
 void indexer::on_bIndex_clicked()
@@ -64,7 +68,10 @@ void indexer::on_bIndex_clicked()
     qDebug() << "could not open directory";
   }
   this->table = new indexTable;
-  threadFunc(this->fq, this->table, ui);
+  std::atomic<unsigned> * counter = new std::atomic<unsigned>;
+  *counter=0;
+  threadFunc(this->fq, this->table, ui, counter, this->fq->getSize());
+  delete counter;
   ui->listWidget->setDisabled(0);
   ui->bFind->setDisabled(0);
   ui->lineEdit->setDisabled(0);

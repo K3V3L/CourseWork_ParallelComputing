@@ -13,6 +13,7 @@ public:
   fileQueue();
   std::string *get();
   void add(std::string file);
+  unsigned getSize();
 };
 
 #endif // FILEQUEUE_H
