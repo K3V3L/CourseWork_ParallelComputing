@@ -1,4 +1,4 @@
-#include "indexer.h"
+﻿#include "indexer.h"
 #include "ui_indexer.h"
 #include <dirent.h>
 #include <filequeue.h>
@@ -9,6 +9,8 @@
 #include <util.h>
 #include <QDebug>
 #include <atomic>
+#include <thread>
+#include <mutex>
 
 indexer::indexer(QWidget *parent) :
   QDialog(parent),
@@ -24,7 +26,7 @@ indexer::~indexer()
 void indexer::setPath(std::string path){
   this->path = path;
 }
-void threadFunc(fileQueue *fq, indexTable *table, Ui::indexer *ui, std::atomic<unsigned> * counter, unsigned size) {
+void threadFunc(fileQueue *fq, indexTable *table, Ui::indexer *ui, std::atomic<unsigned> * counter, unsigned size, std::mutex * m) {
   std::string *filename = nullptr;
   unsigned pos;
   while ((filename = fq->get())) {
@@ -43,16 +45,18 @@ void threadFunc(fileQueue *fq, indexTable *table, Ui::indexer *ui, std::atomic<u
       pos++;
     }
     (*counter)++;
+    std::cout << *counter / (float)size * 100 << std::endl;
+    m->lock();
     ui->listWidget->addItem(QString::fromStdString(*filename));
-    std::cout << *counter / size * 100 << std::endl;
     ui->progressBar->setValue(*counter / (float)size * 100);
+    m->unlock();
   }
 }
 void indexer::on_bIndex_clicked()
 {
   ui->bIndex->setDisabled(1);
   this->fq = new fileQueue;
-  unsigned threads = 1;
+  unsigned threads = 4;
   DIR *dir;
   struct dirent *ent;
   if ((dir = opendir(this->path.c_str())) != NULL) {
@@ -70,12 +74,19 @@ void indexer::on_bIndex_clicked()
   this->table = new indexTable;
   std::atomic<unsigned> * counter = new std::atomic<unsigned>;
   *counter=0;
-  threadFunc(this->fq, this->table, ui, counter, this->fq->getSize());
+  std::thread *indexers = new std::thread[threads];
+  unsigned qSize = this->fq->getSize();
+  std::mutex * m = new std::mutex;
+  for (unsigned i = 0; i < threads; i++) {
+      indexers[i] = std::thread(threadFunc, this->fq, this->table, ui, counter, qSize, m);
+    }
+  for (unsigned i = 0; i < threads; i++) {
+      indexers[i].join();
+    }
   delete counter;
   ui->listWidget->setDisabled(0);
   ui->bFind->setDisabled(0);
   ui->lineEdit->setDisabled(0);
-  //    table->print();
 }
 
 void indexer::on_bFind_clicked()
