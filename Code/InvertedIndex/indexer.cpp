@@ -1,19 +1,17 @@
 ﻿#include "indexer.h"
-#include <dirent.h>
-#include <filepreview.h>
-#include <filequeue.h>
-#include <indextable.h>
-#include <util.h>
+#include "dirent.h"
+#include "filepreview.h"
+#include "filequeue.h"
+#include "indextable.h"
+#include "util.h"
+#include "ui_indexer.h"
 
 #include <QDebug>
-#include <atomic>
 #include <fstream>
 #include <iostream>
 #include <mutex>
-#include <string>
 #include <thread>
 
-#include "ui_indexer.h"
 
 indexer::indexer(QWidget* parent) : QDialog(parent), ui(new Ui::indexer) {
   ui->setupUi(this);

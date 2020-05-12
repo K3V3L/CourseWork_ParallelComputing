@@ -1,10 +1,8 @@
 #include "filepreview.h"
-
-#include <util.h>
+#include "util.h"
+#include "ui_filepreview.h"
 
 #include <fstream>
-
-#include "ui_filepreview.h"
 
 filePreview::filePreview(QWidget* parent)
     : QDialog(parent), ui(new Ui::filePreview) {

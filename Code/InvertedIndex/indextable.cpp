@@ -1,7 +1,5 @@
 #include "indextable.h"
-
-#include <util.h>
-
+#include "util.h"
 #include "iostream"
 
 indexTable::indexTable() {}
