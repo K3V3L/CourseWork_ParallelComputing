@@ -1,19 +1,19 @@
 #ifndef FILEQUEUE_H
 #define FILEQUEUE_H
 #include <QMutex>
-#include <string>
 #include <queue>
+#include <string>
 
-class fileQueue
-{
-private:
+class fileQueue {
+ private:
   QMutex mtx;
   std::queue<std::string> q;
-public:
+
+ public:
   fileQueue();
-  std::string *get();
+  std::string* get();
   void add(std::string file);
   unsigned getSize();
 };
 
-#endif // FILEQUEUE_H
+#endif  // FILEQUEUE_H

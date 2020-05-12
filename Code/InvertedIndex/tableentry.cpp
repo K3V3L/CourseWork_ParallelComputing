@@ -1,6 +1,3 @@
 #include "tableentry.h"
 
-tableEntry::tableEntry()
-{
-
-}
+tableEntry::tableEntry() {}

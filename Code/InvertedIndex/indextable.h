@@ -1,23 +1,22 @@
 #ifndef INDEXTABLE_H
 #define INDEXTABLE_H
-#include <QMutex>
-#include <string>
-#include <map>
-#include <vector>
 #include <tableentry.h>
 
-class indexTable
-{
-private:
+#include <QMutex>
+#include <map>
+#include <string>
+#include <vector>
+
+class indexTable {
+ private:
   QMutex m;
   std::multimap<std::string, tableEntry> table;
 
-public:
+ public:
   indexTable();
-  void insert(std::string word, tableEntry *entry);
+  void insert(std::string word, tableEntry* entry);
   void print();
-  std::vector<std::string> *get(std::string key);
+  std::vector<std::string>* get(std::string key);
 };
 
-#endif // INDEXTABLE_H
-;
+#endif  // INDEXTABLE_H
