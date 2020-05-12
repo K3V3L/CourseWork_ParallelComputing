@@ -44,12 +44,15 @@ void threadFunc(fileQueue *fq, indexTable *table, Ui::indexer *ui, std::atomic<u
       table->insert(word, entry);
       pos++;
     }
+    delete entry;
+    delete words;
     (*counter)++;
     std::cout << *counter / (float)size * 100 << std::endl;
     m->lock();
     ui->listWidget->addItem(QString::fromStdString(*filename));
     ui->progressBar->setValue(*counter / (float)size * 100);
     m->unlock();
+    delete filename;
   }
 }
 void indexer::on_bIndex_clicked()
@@ -71,22 +74,30 @@ void indexer::on_bIndex_clicked()
   } else {
     qDebug() << "could not open directory";
   }
+
+  if (this->table)
+      delete this->table;
   this->table = new indexTable;
   std::atomic<unsigned> * counter = new std::atomic<unsigned>;
   *counter=0;
   std::thread *indexers = new std::thread[threads];
   unsigned qSize = this->fq->getSize();
   std::mutex * m = new std::mutex;
+  ui->listWidget->clear();
   for (unsigned i = 0; i < threads; i++) {
       indexers[i] = std::thread(threadFunc, this->fq, this->table, ui, counter, qSize, m);
     }
   for (unsigned i = 0; i < threads; i++) {
       indexers[i].join();
     }
-  delete counter;
-  ui->listWidget->setDisabled(0);
+    ui->listWidget->setDisabled(0);
   ui->bFind->setDisabled(0);
   ui->lineEdit->setDisabled(0);
+  delete counter;
+  delete m;
+  delete[] indexers;
+  delete fq;
+  ui->bIndex->setEnabled(1);
 }
 
 void indexer::on_bFind_clicked()
@@ -101,6 +112,7 @@ void indexer::on_bFind_clicked()
     std::cout << i << std::endl;
     ui->listWidget->addItem(QString::fromStdString(i));
     }
+  delete results;
   ui->bFind->setEnabled(1);
   ui->lineEdit->setEnabled(1);
 }

@@ -26,7 +26,7 @@ private slots:
 
 private:
   Ui::indexer *ui;
-indexTable * table;
+indexTable * table = nullptr;
 fileQueue * fq;
   std::string path;
 };
