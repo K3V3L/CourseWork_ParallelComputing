@@ -11,6 +11,7 @@
 #include <atomic>
 #include <thread>
 #include <mutex>
+#include <filepreview.h>
 
 indexer::indexer(QWidget *parent) :
   QDialog(parent),
@@ -102,6 +103,7 @@ void indexer::on_bIndex_clicked()
 
 void indexer::on_bFind_clicked()
 {
+  this->key = ui->lineEdit->text().toStdString();
   ui->listWidget->clear();
    ui->bFind->setDisabled(1);
    ui->lineEdit->setDisabled(1);
@@ -115,4 +117,19 @@ void indexer::on_bFind_clicked()
   delete results;
   ui->bFind->setEnabled(1);
   ui->lineEdit->setEnabled(1);
+}
+
+void indexer::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+   std::cout << "clicked : " << item->text().toStdString() << std::endl;
+   filePreview preview;
+   preview.loadFile(item->text().toStdString(), this->key);
+   preview.exec();
+
+//   FinalWIndow DrawWindow;
+//       DrawWindow.setMode(g_mode);
+//       DrawWindow.setNumber(n);
+//       DrawWindow.setData(rects);
+//       this->close();
+//       DrawWindow.exec();
 }

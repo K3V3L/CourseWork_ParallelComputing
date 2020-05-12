@@ -5,6 +5,7 @@
 #include <string>
 #include <indextable.h>
 #include <filequeue.h>
+#include <QListWidgetItem>
 
 namespace Ui {
   class indexer;
@@ -24,7 +25,10 @@ private slots:
 
   void on_bFind_clicked();
 
+  void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+
 private:
+  std::string key;
   Ui::indexer *ui;
 indexTable * table = nullptr;
 fileQueue * fq;
