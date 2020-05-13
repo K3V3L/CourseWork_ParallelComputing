@@ -10,17 +10,18 @@ filePreview::filePreview(QWidget* parent)
 }
 
 filePreview::~filePreview() { delete ui; }
+
 void filePreview::highlight(std::string key) {
-  util::strToWords(key);
+  std::vector<std::string> * keys = util::strToWords(key);
   QTextEdit::ExtraSelection extra;
   QList<QTextEdit::ExtraSelection> extraSelections;
 
-  for (std::string word : *(util::strToWords(key))) {
+  for (std::string word : *keys) {
     if (!ui->textEdit->isReadOnly()) {
       ui->textEdit->moveCursor(QTextCursor::Start);
-      QColor color = QColor(Qt::gray).lighter(130);
+      QColor color = QColor(Qt::yellow);
 
-      while (ui->textEdit->find(QString::fromStdString(key))) {
+      while (ui->textEdit->find(QString::fromStdString(word))) {
         extra.format.setBackground(color);
 
         extra.cursor = ui->textEdit->textCursor();
@@ -28,10 +29,9 @@ void filePreview::highlight(std::string key) {
       }
     }
   }
-
+  delete keys;
   ui->textEdit->setExtraSelections(extraSelections);
-  ui->textEdit->textCursor().setPosition(QTextCursor::Start);
-  extra.cursor.setPosition(QTextCursor::Start);
+  ui->textEdit->moveCursor(QTextCursor::Start);
 }
 
 void filePreview::loadFile(std::string fileName, std::string key) {
