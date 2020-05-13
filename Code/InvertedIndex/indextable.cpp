@@ -26,7 +26,7 @@ std::vector<std::string>* indexTable::get(std::string key) {
     for (auto& i : *(util::strToWords(key))) {
       auto range = table.equal_range(i);
       for (auto itr = range.first; itr != range.second; itr++) {
-          if (std::find(res->begin(), res->end(), key) == res->end())
+          if (std::find(res->begin(), res->end(), itr->second.path) == res->end())
                 res->push_back(itr->second.path);
       }
     }
