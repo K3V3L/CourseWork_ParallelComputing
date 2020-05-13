@@ -32,6 +32,7 @@ std::vector<std::string>* indexTable::get(std::string key) {
     }
   } else {  // it's a keyword
     std::cout << "keyword" << std::endl;
+    transform(key.begin(), key.end(),key.begin(), ::tolower);
     auto range = table.equal_range(key);
     for (auto itr = range.first; itr != range.second; itr++) {
       res->push_back(itr->second.path);
