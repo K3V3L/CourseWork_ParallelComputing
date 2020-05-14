@@ -14,6 +14,7 @@
 
 indexer::indexer(QWidget* parent) : QDialog(parent), ui(new Ui::indexer) {
   ui->setupUi(this);
+  ui->lStatus->hide();
 }
 
 indexer::~indexer() { delete ui; }
@@ -58,7 +59,7 @@ void threadFunc(fileQueue* fq, indexTable* table, Ui::indexer* ui,
 void indexer::on_bIndex_clicked() {
   ui->bIndex->setDisabled(1);
   this->fq = new fileQueue;
-  unsigned threads = 1;
+  unsigned threads = 4;
   DIR* dir;
   struct dirent* ent;
   if ((dir = opendir(this->path.c_str())) != NULL) {
@@ -115,6 +116,8 @@ void indexer::on_bFind_clicked() {
   std::vector<std::string>* results =
       this->table->get(ui->lineEdit->text().toStdString());
   std::cout << "Found " << results->size() << " matches" << std::endl;
+  ui->lStatus->setText("Found " + QString::number(results->size()) + " matches");
+  ui->lStatus->show();
   for (auto& i : *results) {
     std::cout << i << std::endl;
     ui->listWidget->addItem(QString::fromStdString(i));
