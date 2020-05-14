@@ -1,9 +1,10 @@
 #include "folderdialog.h"
-#include "indexer.h"
-#include "ui_folderdialog.h"
 
 #include <QFileDialog>
 #include <iostream>
+
+#include "indexer.h"
+#include "ui_folderdialog.h"
 
 folderDialog::folderDialog(QWidget* parent)
     : QDialog(parent), ui(new Ui::folderDialog) {

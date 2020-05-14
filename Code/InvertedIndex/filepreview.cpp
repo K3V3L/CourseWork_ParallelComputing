@@ -1,8 +1,9 @@
 #include "filepreview.h"
-#include "util.h"
-#include "ui_filepreview.h"
 
 #include <fstream>
+
+#include "ui_filepreview.h"
+#include "util.h"
 
 filePreview::filePreview(QWidget* parent)
     : QDialog(parent), ui(new Ui::filePreview) {
@@ -12,7 +13,7 @@ filePreview::filePreview(QWidget* parent)
 filePreview::~filePreview() { delete ui; }
 
 void filePreview::highlight(std::string key) {
-  std::vector<std::string> * keys = util::strToWords(key);
+  std::vector<std::string>* keys = util::strToWords(key);
   QTextEdit::ExtraSelection extra;
   QList<QTextEdit::ExtraSelection> extraSelections;
 

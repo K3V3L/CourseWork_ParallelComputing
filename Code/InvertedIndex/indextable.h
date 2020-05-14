@@ -17,6 +17,7 @@ class indexTable {
   void insert(std::string word, tableEntry* entry);
   void print();
   std::vector<std::string>* get(std::string key);
+  void merge(std::multimap<std::string, tableEntry>* tmpTable);
 };
 
 #endif  // INDEXTABLE_H
