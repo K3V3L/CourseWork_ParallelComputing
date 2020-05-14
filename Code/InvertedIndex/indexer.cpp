@@ -116,7 +116,8 @@ void indexer::on_bFind_clicked() {
   std::vector<std::string>* results =
       this->table->get(ui->lineEdit->text().toStdString());
   std::cout << "Found " << results->size() << " matches" << std::endl;
-  ui->lStatus->setText("Found " + QString::number(results->size()) + " matches");
+  ui->lStatus->setText("Found " + QString::number(results->size()) +
+                       " matches");
   ui->lStatus->show();
   for (auto& i : *results) {
     std::cout << i << std::endl;

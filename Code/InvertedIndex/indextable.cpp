@@ -57,9 +57,32 @@ std::vector<std::string>* indexTable::get(std::string key) {
   } else {  // it's a keyword
     std::cout << "keyword" << std::endl;
     transform(key.begin(), key.end(), key.begin(), ::tolower);
-    auto range = table.equal_range(key);
+
+    std::map<std::string, unsigned> score;
+    auto range = this->table.equal_range(key);
     for (auto itr = range.first; itr != range.second; itr++) {
-      res->push_back(itr->second.path);
+      auto i = score.find(itr->second.path);
+      if (i == score.end()) {
+        score.insert(std::pair<std::string, unsigned>(itr->second.path, 1));
+      } else {
+        i->second++;
+      }
+
+      // res.push_back(itr->second);
+    }
+
+    std::vector<std::pair<std::string, unsigned>> pairs;
+    for (auto itr = score.begin(); itr != score.end(); ++itr)
+      pairs.push_back(*itr);
+
+    sort(pairs.begin(), pairs.end(),
+         [=](std::pair<std::string, unsigned>& a,
+             std::pair<std::string, unsigned>& b) {
+           return a.second < b.second;
+         });
+    for (auto i : pairs) {
+      std::cout << i.first << " : " << i.second << std::endl;
+      res->emplace(res->begin(), i.first);
     }
   }
   delete keys;
