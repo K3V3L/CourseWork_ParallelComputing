@@ -21,8 +21,9 @@ void filePreview::highlight(std::string key) {
     if (!ui->textEdit->isReadOnly()) {
       ui->textEdit->moveCursor(QTextCursor::Start);
       QColor color = QColor(Qt::yellow);
-
-      while (ui->textEdit->find(QString::fromStdString(word))) {
+      QRegExp RE = QRegExp("[^a-z^A-Z]" + QString::fromStdString(key) + "[^a-z^A-Z]");
+      RE.setMinimal(1);
+      while (ui->textEdit->find(RE)) {
         extra.format.setBackground(color);
 
         extra.cursor = ui->textEdit->textCursor();
@@ -41,4 +42,5 @@ void filePreview::loadFile(std::string fileName, std::string key) {
                        std::istreambuf_iterator<char>());
   ui->textEdit->setText(QString::fromStdString(contents));
   if (!key.empty()) this->highlight(key);
+  this->setWindowTitle("Preview: " + QString::fromStdString(fileName));
 }
