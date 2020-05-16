@@ -41,4 +41,5 @@ void filePreview::loadFile(std::string fileName, std::string key) {
                        std::istreambuf_iterator<char>());
   ui->textEdit->setText(QString::fromStdString(contents));
   if (!key.empty()) this->highlight(key);
+  this->setWindowTitle("Preview: " + QString::fromStdString(fileName));
 }
