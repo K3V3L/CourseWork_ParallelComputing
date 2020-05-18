@@ -10,12 +10,10 @@
 class indexTable {
  private:
   QMutex m;
-  std::multimap<std::string, tableEntry> table;
+  std::vector<std::multimap<std::string, tableEntry> * > table;
 
  public:
   indexTable();
-  void insert(std::string word, tableEntry* entry);
-  void print();
   std::vector<std::string>* get(std::string key);
   void merge(std::multimap<std::string, tableEntry>* tmpTable);
 };

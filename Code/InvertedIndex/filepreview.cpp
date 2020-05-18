@@ -4,6 +4,7 @@
 
 #include "ui_filepreview.h"
 #include "util.h"
+#include <iostream>
 
 filePreview::filePreview(QWidget* parent)
     : QDialog(parent), ui(new Ui::filePreview) {
@@ -14,14 +15,17 @@ filePreview::~filePreview() { delete ui; }
 
 void filePreview::highlight(std::string key) {
   std::vector<std::string>* keys = util::strToWords(key);
+
   QTextEdit::ExtraSelection extra;
   QList<QTextEdit::ExtraSelection> extraSelections;
 
   for (std::string word : *keys) {
+      std::cout << word << std::endl;
     if (!ui->textEdit->isReadOnly()) {
       ui->textEdit->moveCursor(QTextCursor::Start);
       QColor color = QColor(Qt::yellow);
       QRegExp RE = QRegExp("[^a-z^A-Z]" + QString::fromStdString(key) + "[^a-z^A-Z]");
+      RE.setCaseSensitivity(Qt::CaseInsensitive);
       RE.setMinimal(1);
       while (ui->textEdit->find(RE)) {
         extra.format.setBackground(color);
