@@ -58,7 +58,7 @@ void threadFunc(fileQueue* fq, indexTable* table, Ui::indexer* ui,
 void indexer::on_bIndex_clicked() {
   ui->bIndex->setDisabled(1);
   this->fq = new fileQueue;
-  unsigned threads = 4;
+  unsigned threads = std::thread::hardware_concurrency();
   DIR* dir;
   struct dirent* ent;
   if ((dir = opendir(this->path.c_str())) != NULL) {
