@@ -1,10 +1,10 @@
 #include "filepreview.h"
 
 #include <fstream>
+#include <iostream>
 
 #include "ui_filepreview.h"
 #include "util.h"
-#include <iostream>
 
 filePreview::filePreview(QWidget* parent)
     : QDialog(parent), ui(new Ui::filePreview) {
@@ -19,21 +19,31 @@ void filePreview::highlight(std::string key) {
   QTextEdit::ExtraSelection extra;
   QList<QTextEdit::ExtraSelection> extraSelections;
 
-  for (std::string word : *keys) {
-      std::cout << word << std::endl;
-    if (!ui->textEdit->isReadOnly()) {
-      ui->textEdit->moveCursor(QTextCursor::Start);
-      QColor color = QColor(Qt::yellow);
-      QRegExp RE = QRegExp("[^a-z^A-Z]" + QString::fromStdString(key) + "[^a-z^A-Z]");
-      RE.setCaseSensitivity(Qt::CaseInsensitive);
-      RE.setMinimal(1);
-      while (ui->textEdit->find(RE)) {
-        extra.format.setBackground(color);
+  bool phrase = keys->size() - 1;
+  std::cout << phrase << std::endl;
+  if (!ui->textEdit->isReadOnly()) {
+    ui->textEdit->moveCursor(QTextCursor::Start);
+    QColor color = QColor(Qt::yellow);
+    QString RS = "[^a-z^A-Z]";
+    for (std::string word : *keys) {
+      RS += QString::fromStdString(word) + "[^a-z^A-Z]";
+    }
+    QRegExp RE = QRegExp(RS);
 
-        extra.cursor = ui->textEdit->textCursor();
-        extraSelections.append(extra);
+    RE.setCaseSensitivity(Qt::CaseInsensitive);
+    RE.setMinimal(1);
+    while (ui->textEdit->find(RE)) {
+      extra.format.setBackground(color);
+
+      extra.cursor = ui->textEdit->textCursor();
+      if (phrase) {
+      } else {
+        extra.cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+        extra.cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+        extra.cursor.select(QTextCursor::WordUnderCursor);
       }
     }
+    extraSelections.append(extra);
   }
   delete keys;
   ui->textEdit->setExtraSelections(extraSelections);

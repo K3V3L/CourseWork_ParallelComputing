@@ -10,7 +10,7 @@
 class indexTable {
  private:
   QMutex m;
-  std::vector<std::multimap<std::string, tableEntry> * > table;
+  std::vector<std::multimap<std::string, tableEntry>*> table;
 
  public:
   indexTable();

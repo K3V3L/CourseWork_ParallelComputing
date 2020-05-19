@@ -30,7 +30,7 @@ void threadFunc(fileQueue* fq, indexTable* table, Ui::indexer* ui,
   while ((filename = fq->get())) {
     pos = 0;
     std::ifstream in(*filename);
-    //std::cout << *filename << std::endl;
+    // std::cout << *filename << std::endl;
     std::string contents((std::istreambuf_iterator<char>(in)),
                          std::istreambuf_iterator<char>());
     std::vector<std::string>* words = util::strToWords(contents);
@@ -45,7 +45,7 @@ void threadFunc(fileQueue* fq, indexTable* table, Ui::indexer* ui,
     delete entry;
     delete words;
     (*counter)++;
-    //std::cout << *counter / (float)size * 100 << std::endl;
+    // std::cout << *counter / (float)size * 100 << std::endl;
     m->lock();
     ui->listWidget->addItem(QString::fromStdString(*filename));
     ui->progressBar->setValue(*counter / (float)size * 100);
