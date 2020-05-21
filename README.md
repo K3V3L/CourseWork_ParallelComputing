@@ -1,6 +1,6 @@
 # CourseWork_ParallelComputing
 
-![Image of Yaktocat](https://github.com/K3V3L/CourseWork_ParallelComputing/img/res.png)
+![Image](https://github.com/K3V3L/CourseWork_ParallelComputing/blob/master/img/res.png)
 
 ## How to build
 
