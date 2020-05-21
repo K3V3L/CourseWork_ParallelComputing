@@ -1,7 +1,4 @@
 # CourseWork_ParallelComputing
-
-![Image of Yaktocat](https://github.com/K3V3L/CourseWork_ParallelComputing/img/res.png)
-
 ## How to build
 
 1. Install dependencies: git qt-base gcc
