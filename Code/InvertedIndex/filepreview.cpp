@@ -42,8 +42,8 @@ void filePreview::highlight(std::string key) {
         extra.cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
         extra.cursor.select(QTextCursor::WordUnderCursor);
       }
+      extraSelections.append(extra);
     }
-    extraSelections.append(extra);
   }
   delete keys;
   ui->textEdit->setExtraSelections(extraSelections);
